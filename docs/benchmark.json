@@ -1,0 +1,14 @@
+{
+  "description": "Historical experiments; checkpoints selected by minimum validation loss within each run",
+  "target_classes": ["golden_retriever", "collie"],
+  "target_split_sizes": {"train": 300, "val": 150, "test": 100},
+  "results": [
+    {"model": "cnn_from_scratch", "validation_auroc": 0.9623, "test_auroc": 0.7304, "evidence": "local experiment report, baseline checkpoint unavailable"},
+    {"model": "transfer_freeze_0", "epoch": 8, "validation_auroc": 0.9550222222222222, "test_auroc": 0.7588, "evidence": "saved checkpoint statistics"},
+    {"model": "transfer_freeze_1", "epoch": 9, "validation_auroc": 0.955911111111111, "test_auroc": 0.7680, "evidence": "saved checkpoint statistics"},
+    {"model": "transfer_freeze_2", "epoch": 16, "validation_auroc": 0.9484444444444444, "test_auroc": 0.7652, "evidence": "saved checkpoint statistics"},
+    {"model": "transfer_freeze_3", "epoch": 102, "validation_auroc": 0.9146666666666667, "test_auroc": 0.8228, "evidence": "saved checkpoint statistics"},
+    {"model": "vit_from_scratch", "epoch": 11, "validation_auroc": 0.9550222222222222, "test_auroc": 0.5532, "evidence": "local experiment report; validation metric also in checkpoint statistics"}
+  ],
+  "note": "Current code fixes evaluation mode and checkpoint handling. These values are not results of a new run."
+}

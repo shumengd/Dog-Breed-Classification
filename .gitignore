@@ -1,0 +1,35 @@
+# Local datasets, reports, and prediction exports
+*.[pP][dD][fF]
+*.[cC][sS][vV]
+/data/
+/checkpoints/
+*.pt
+*.pth
+*.pth.tar
+*.ckpt
+*.zip
+/results/
+/outputs/
+/runs/
+
+# Keep curated historical figures under docs/figures; ignore new root-level plots.
+/*training*.png
+/Q*.png
+/visualize*.png
+/confusion_matrix.png
+
+# Python environments and generated files
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+*.egg-info/
+build/
+dist/
+.DS_Store
+.env
+.env.*
