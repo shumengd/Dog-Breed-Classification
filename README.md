@@ -5,6 +5,26 @@ supervised transfer learning, and a Vision Transformer on a small dog breed data
 The target task distinguishes **Golden Retrievers** from **Collies**; an eight-breed
 source task supplies pretrained convolutional features.
 
+## Interactive Demo
+
+Run the local app using the existing Python environment:
+
+```bash
+python demo.py
+```
+
+Open **http://127.0.0.1:8000**. The prediction workspace supports JPEG, PNG, and
+WebP uploads, model switching, class probability bars, held-out sample images,
+and downloadable prediction JSON. The Experiments tab compares the historical
+and reproduced runs and displays saved training curves. Uploaded images are
+processed in memory and are not stored by the server.
+
+The supplied models distinguish Golden Retrievers from Collies. They do not
+detect other breeds or establish whether an image contains a dog. Displayed
+softmax probabilities are model scores, not calibrated confidence estimates.
+Models and data remain local; the app listens on loopback and is intended for
+local demonstrations.
+
 ## Results
 
 Freezing all three pretrained convolutional layers improved held-out test AUROC
@@ -31,6 +51,28 @@ test performance. These observations do not establish a general ranking of CNNs
 and ViTs or prove the cause of the distribution gap.
 
 ![Transfer learning training curves](docs/figures/transfer-learning.png)
+
+### Reproduced Experiments
+
+A separate run of the corrected pipeline reproduced the comparison using the
+same target splits. Each run selects a checkpoint by minimum validation loss
+and evaluates the test split once afterward.
+
+| Model / Strategy | Validation AUROC | Test AUROC |
+| --- | ---: | ---: |
+| CNN trained from scratch | 0.9621 | 0.7312 |
+| Pretrained CNN, all layers fine-tuned | 0.9596 | 0.7684 |
+| Pretrained CNN, first convolution frozen | 0.9573 | 0.7896 |
+| Pretrained CNN, first two convolutions frozen | 0.9525 | 0.7784 |
+| Pretrained CNN, all three convolutions frozen | 0.9161 | 0.8260 |
+| Vision Transformer trained from scratch | 0.9550 | 0.5532 |
+
+The reproduced transfer comparison improved test AUROC by 0.0948 over its own
+baseline. Freezing all convolutions leaves **66 trainable parameters**, compared
+with 39,754 in the target CNN. This is a single-seed run, not evidence that the
+code fixes reliably improve AUROC across repeated runs. The complete metrics,
+selected epochs, early stopping state, and runtime versions are stored in
+[the reproduction record](docs/reproduced-benchmark.json).
 
 ## Approach
 
@@ -111,6 +153,9 @@ python train_challenge.py
 
 # Predict positive-class probabilities for unlabeled target images
 python predict_challenge.py --output results/predictions.csv
+
+# Reproduce all six target comparisons plus source pretraining in a new directory
+python run_benchmarks.py --output results/my-run --max-epochs 200
 ```
 
 Training continues from the latest local model checkpoint when one exists; Adam's
@@ -122,6 +167,28 @@ from source weights and writes its summary to `results/experiments.json`.
 Training plots are saved as PNG files. For a terminal-only environment, set
 `MPLBACKEND=Agg` before running a training command. The supplied training scripts
 run on CPU; GPU training is not wired into the training loop.
+
+### Single-Image Inference And Model Export
+
+```bash
+# Use a legacy checkpoint and reconstruct train-only normalization locally
+python predict_image.py path/to/dog.jpg --model transfer
+
+# Package weights, architecture, class order, and normalization
+python export_model.py --model transfer
+
+# Predict with the exported bundle, without dogs.csv or the training images
+python predict_image.py path/to/dog.jpg --bundle checkpoints/demo/transfer.bundle.pt
+
+# Export a checkpoint from a new reproduction run
+python export_model.py --model cnn --checkpoint-dir results/my-run/cnn_from_scratch
+```
+
+Exported bundles are ignored by Git. The demo automatically uses bundles found
+under `checkpoints/demo/`, with legacy checkpoints as a fallback. A machine with
+only the bundle can run `python demo.py --bundle-dir path/to/bundles` and upload
+images; dataset sample buttons are shown only when local metadata is available.
+Use `--port 8001` when port 8000 is occupied.
 
 ### Checks
 
@@ -145,6 +212,12 @@ train_target.py          Transfer learning comparisons
 train_vit.py             ViT baseline
 train_challenge.py       Freezing and regularization sweep
 predict_challenge.py     Unlabeled image inference
+inference.py             Single-image preprocessing and portable model bundles
+demo.py                  Local prediction and experiment viewer
+web/                     Browser interface and vendored icons
+predict_image.py         Single-image prediction CLI
+export_model.py          Inference bundle export
+run_benchmarks.py        Isolated reproduction of model comparisons
 tests/                  Synthetic regression tests
 docs/                   Historical results and resume wording
 config.json             Local experiment configuration
@@ -161,3 +234,5 @@ The repository preserves the experiments while adding documentation, regression
 tests, and fixes to checkpoint transfer, evaluation, and experiment selection.
 The ViT implementation retains credit to Brian Pulfer's educational implementation
 in `model/vit.py`.
+The interface uses vendored Lucide 0.468.0 icons; their license is preserved in
+`web/vendor/LUCIDE-LICENSE`.

@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Dog Breed Classification</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/static/styles.css">
+  <script defer src="/static/vendor/lucide.min.js"></script>
+  <script defer src="/static/app.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"><i data-lucide="scan-eye"></i></span>
+      <div><h1>Dog Breed Classification</h1><p>Golden Retriever / Collie</p></div>
+    </div>
+    <span id="connection" class="connection"><span></span>Connecting</span>
+  </header>
+  <main>
+    <nav class="tabs" aria-label="Workspace" role="tablist">
+      <button id="predict-tab" class="tab active" role="tab" aria-selected="true" aria-controls="predict-view"><i data-lucide="image"></i>Predict</button>
+      <button id="experiments-tab" class="tab" role="tab" tabindex="-1" aria-selected="false" aria-controls="experiments-view"><i data-lucide="chart-no-axes-combined"></i>Experiments</button>
+    </nav>
+
+    <section id="predict-view" role="tabpanel" aria-labelledby="predict-tab">
+      <div class="workspace-toolbar">
+        <div class="section-title"><h2>Image classification</h2><span id="source-tag" class="source-tag">No image selected</span></div>
+        <div class="toolbar-actions">
+          <button id="reset" class="icon-button" title="Clear image" aria-label="Clear image"><i data-lucide="rotate-ccw"></i></button>
+          <button id="download" class="icon-button" title="Download prediction" aria-label="Download prediction" disabled><i data-lucide="download"></i></button>
+        </div>
+      </div>
+      <div class="prediction-layout">
+        <div class="image-column">
+          <div id="drop-zone" class="image-workspace">
+            <img id="preview" class="preview-image" alt="Selected dog image" hidden>
+            <div id="empty-image" class="empty-image"><i data-lucide="image-plus"></i><span>No image selected</span></div>
+            <span id="drag-label" class="drag-label" hidden><i data-lucide="upload"></i>Drop image</span>
+          </div>
+          <div class="image-footer">
+            <div class="file-meta"><span id="filename">Image</span><span id="image-dimensions">JPEG, PNG, WebP / 8 MB</span></div>
+            <input id="file-input" type="file" accept="image/jpeg,image/png,image/webp" hidden>
+            <button id="upload" class="button secondary"><i data-lucide="upload"></i>Select image</button>
+          </div>
+          <div class="samples-heading"><h3>Test samples</h3><span id="sample-count"></span></div>
+          <div id="samples" class="samples"></div>
+        </div>
+        <aside class="results-panel" aria-label="Prediction">
+          <label class="field-label" for="model-select">Model</label>
+          <select id="model-select" aria-label="Model"><option>Loading models</option></select>
+          <div class="model-meta"><span id="model-detail">Checkpoint unavailable</span><span>CPU</span></div>
+          <button id="classify" class="button primary" disabled><i data-lucide="scan-line"></i><span>Classify image</span></button>
+          <p id="error" class="error-message" role="alert" hidden></p>
+          <div id="prediction" class="prediction" aria-live="polite" aria-busy="false">
+            <div class="result-caption">Prediction</div>
+            <h2 id="breed">Awaiting image</h2>
+            <div class="result-confidence"><strong id="confidence">--</strong><span>model probability</span></div>
+            <div class="probabilities">
+              <div class="probability-row"><div><span>Golden Retriever</span><strong id="golden-value">--</strong></div><div class="bar-track"><span id="golden-bar" class="bar golden"></span></div></div>
+              <div class="probability-row"><div><span>Collie</span><strong id="collie-value">--</strong></div><div class="bar-track"><span id="collie-bar" class="bar collie"></span></div></div>
+            </div>
+            <div id="ground-truth" class="ground-truth" hidden><span>Dataset label</span><strong id="actual-label"></strong></div>
+            <div class="result-footer"><span id="elapsed">-- ms</span><span id="epoch">Epoch --</span></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="experiments-view" role="tabpanel" aria-labelledby="experiments-tab" hidden>
+      <div class="experiments-header"><div><h2>Model comparison</h2><p>Golden Retriever / Collie</p></div><select id="benchmark-select" aria-label="Experiment results"><option value="historical">Original experiments</option></select></div>
+      <div class="experiment-metrics">
+        <div><span>Target training images</span><strong>300</strong></div>
+        <div><span>Validation images</span><strong>150</strong></div>
+        <div><span>Test images</span><strong>100</strong></div>
+        <div><span id="gain-caption">Frozen CNN AUROC gain</span><strong id="gain-value">+0.0924</strong></div>
+      </div>
+      <div class="table-scroll"><table><thead><tr><th>Model</th><th>Frozen layers</th><th>Epoch</th><th>Validation AUROC</th><th>Test AUROC</th></tr></thead><tbody id="benchmark-rows"></tbody></table></div>
+      <p id="benchmark-note" class="benchmark-note"></p>
+      <div class="figure-heading"><h3>Training curves</h3><select id="figure-select" aria-label="Training curves"><option value="transfer-learning.png">Frozen CNN</option><option value="cnn-training.png">CNN from scratch</option><option value="vit-training.png">Vision Transformer</option><option value="source-confusion-matrix.png">Source confusion matrix</option></select></div>
+      <figure><img id="training-figure" src="/figures/transfer-learning.png" alt="Frozen CNN accuracy, loss, and AUROC across training epochs"><figcaption id="figure-caption">Original experiment</figcaption></figure>
+    </section>
+    <footer class="page-footer"><span>PyTorch</span><span>Binary classification</span><a href="https://github.com/shumengd/Dog-Breed-Classification" target="_blank" rel="noreferrer">Repository<i data-lucide="arrow-up-right"></i></a></footer>
+  </main>
+</body>
+</html>

@@ -1,0 +1,123 @@
+{
+  "description": "Reproduced comparisons after evaluation and checkpoint fixes",
+  "target_classes": [
+    "golden_retriever",
+    "collie"
+  ],
+  "target_split_sizes": {
+    "train": 300,
+    "val": 150,
+    "test": 100
+  },
+  "protocol": {
+    "seed": 445,
+    "target_cnn_initialization_seed": 42,
+    "device": "cpu",
+    "threads": 1,
+    "max_epochs": 200,
+    "selection": "minimum validation loss per run",
+    "test_evaluation": "once per run, after checkpoint selection",
+    "torch_version": "2.14.1"
+  },
+  "source_result": {
+    "model": "source",
+    "epoch": 8,
+    "epochs_trained": 18,
+    "stopped_early": true,
+    "validation_accuracy": 0.30416666666666664,
+    "validation_loss": 1.8107447290420533,
+    "validation_auroc": 0.731065873015873,
+    "test_accuracy": 0.32083333333333336,
+    "test_loss": 1.783485164642334,
+    "test_auroc": 0.7506928571428572,
+    "trainable_parameters": 39952,
+    "elapsed_seconds": 39.09
+  },
+  "results": [
+    {
+      "model": "cnn_from_scratch",
+      "epoch": 10,
+      "epochs_trained": 15,
+      "stopped_early": true,
+      "validation_accuracy": 0.94,
+      "validation_loss": 0.21939151495695114,
+      "validation_auroc": 0.9621333333333334,
+      "test_accuracy": 0.63,
+      "test_loss": 0.9337269783020019,
+      "test_auroc": 0.7312,
+      "trainable_parameters": 39754,
+      "elapsed_seconds": 4.83
+    },
+    {
+      "model": "transfer_freeze_0",
+      "epoch": 5,
+      "epochs_trained": 10,
+      "stopped_early": true,
+      "validation_accuracy": 0.9266666666666666,
+      "validation_loss": 0.24999630570411682,
+      "validation_auroc": 0.9596444444444444,
+      "test_accuracy": 0.7,
+      "test_loss": 0.6908778190612793,
+      "test_auroc": 0.7684000000000001,
+      "trainable_parameters": 39754,
+      "elapsed_seconds": 3.19
+    },
+    {
+      "model": "transfer_freeze_1",
+      "epoch": 11,
+      "epochs_trained": 16,
+      "stopped_early": true,
+      "validation_accuracy": 0.8933333333333333,
+      "validation_loss": 0.266746872117122,
+      "validation_auroc": 0.9573333333333334,
+      "test_accuracy": 0.68,
+      "test_loss": 0.7852833366394043,
+      "test_auroc": 0.7896,
+      "trainable_parameters": 38538,
+      "elapsed_seconds": 4.45
+    },
+    {
+      "model": "transfer_freeze_2",
+      "epoch": 16,
+      "epochs_trained": 21,
+      "stopped_early": true,
+      "validation_accuracy": 0.8866666666666667,
+      "validation_loss": 0.2723716475566228,
+      "validation_auroc": 0.9525333333333332,
+      "test_accuracy": 0.71,
+      "test_loss": 0.7022456407546998,
+      "test_auroc": 0.7784,
+      "trainable_parameters": 12874,
+      "elapsed_seconds": 5.37
+    },
+    {
+      "model": "transfer_freeze_3",
+      "epoch": 127,
+      "epochs_trained": 132,
+      "stopped_early": true,
+      "validation_accuracy": 0.8266666666666667,
+      "validation_loss": 0.38038873255252836,
+      "validation_auroc": 0.916088888888889,
+      "test_accuracy": 0.72,
+      "test_loss": 0.5054079508781433,
+      "test_auroc": 0.8260000000000001,
+      "trainable_parameters": 66,
+      "elapsed_seconds": 31.64
+    },
+    {
+      "model": "vit_from_scratch",
+      "epoch": 11,
+      "epochs_trained": 16,
+      "stopped_early": true,
+      "validation_accuracy": 0.9333333333333333,
+      "validation_loss": 0.20961694836616515,
+      "validation_auroc": 0.9550222222222222,
+      "test_accuracy": 0.59,
+      "test_loss": 1.345966625213623,
+      "test_auroc": 0.5532,
+      "trainable_parameters": 7394,
+      "elapsed_seconds": 14.62
+    }
+  ],
+  "note": "Single-seed reproduction. Each model uses the same target splits and train-only normalization. Test AUROC is reported for comparison, not used to select a checkpoint. These runs are separate from the historical experiments."
+}
